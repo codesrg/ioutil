@@ -1,0 +1,4 @@
+srutil~=1.0.1
+toml~=0.10.2
+pandas~=1.5.1
+pyarrow~=7.0.0
