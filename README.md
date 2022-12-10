@@ -33,13 +33,24 @@ to read/write files:
 
 ### Python Script
 
-To encrypt/decrypt message using rsa.
+To read/write csv file.
 
 ```python
 from ioutil import csv
 
 data = [['a', 'b'], [[1, 2], [3, 4]]]
 path = '.../file.csv'
+csv.write(data, path)  # to write csv
+csv.read(path)  # to read csv
+```
+
+```python
+from ioutil import File
+
+data = [['a', 'b'], [[1, 2], [3, 4]]]
+path = '.../file.csv'
+
+csv = File.getinstance('csv')
 csv.write(data, path)  # to write csv
 csv.read(path)  # to read csv
 ```
