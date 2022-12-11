@@ -6,9 +6,8 @@ import argparse
 from srutil import util
 from typing import AnyStr
 
-from ioutil import File
-__version__, __package__, __all__ = '', '', list()
-from ioutil._file import _File
+from . import File, __version__, __package__, __all__
+from ._file import _File
 
 
 def _epilog() -> str:
