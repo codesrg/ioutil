@@ -29,6 +29,9 @@ to read/write files:
   -f, --format    file format to use
   -m, --mode      mode to open file
   --rfv           will return formatted string (CSV only)
+
+-w/--write function may return error as it expects data in specific datatype.
+Writing files using commandline isn't recommended.
 ```
 
 ### Python Script
@@ -38,21 +41,21 @@ To read/write csv file.
 ```python
 from ioutil import csv
 
-data = [['a', 'b'], [[1, 2], [3, 4]]]
+data = [['a', 'b'], [1, 2], [3, 4]]
 path = '.../file.csv'
-csv.write(data, path)  # to write csv
-csv.read(path)  # to read csv
+csv.write(data=data, path=path)  # to write csv
+csv.read(path=path)  # to read csv
 ```
 
 ```python
 from ioutil import File
 
-data = [['a', 'b'], [[1, 2], [3, 4]]]
+data = [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]
 path = '.../file.csv'
 
 csv = File.getinstance('csv')
-csv.write(data, path)  # to write csv
-csv.read(path)  # to read csv
+csv.write(data=data, path=path)  # to write csv
+csv.read(path=path)  # to read csv
 ```
 
 ### Command Line

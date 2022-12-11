@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ioutil"
-version = "1.0.1"
+version = "1.0.2"
 description = "To read and write files."
 readme = "README.md"
 requires-python = ">=3.6"
