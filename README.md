@@ -58,7 +58,7 @@ csv.write(data=data, path=path)  # to write csv
 csv.read(path=path)  # to read csv
 ```
 
-### Command Line
+### Command Line (not recommended) 
 
 To write a text file.
 
