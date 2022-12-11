@@ -36,4 +36,4 @@ class Csv(_File):
         with self._get_stream(path, mode) as csvfile:
             for line in csv.reader(csvfile):
                 to_return.append(line)
-        return util.tabulate(to_return) if _rfv else to_return
+        return util.tabulate(to_return, table_fmt="plain") if _rfv else to_return
