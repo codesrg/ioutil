@@ -1,17 +1,24 @@
 from __future__ import annotations
 
 import os
+import ast
 import sys
 import argparse
 from srutil import util
-from typing import AnyStr
+from typing import AnyStr, Any
 
 from . import File, __version__, __package__, __all__
 from ._file import _File
 
 
-def get_argument():
-    parser = argparse.ArgumentParser(prog=__package__, usage=util.stringbuilder(__package__, " [options]"))
+def _epilog() -> str:
+    return """-w/--write function may return error as it expects data in specific datatype. 
+           Writing files using commandline isn't recommended."""
+
+
+def get_argument() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(prog=__package__, usage=util.stringbuilder(__package__, " [options]"),
+                                     epilog=_epilog())
     parser.add_argument('-v', '--version', action='version', help='show version number and exit.', version=__version__)
     group = parser.add_argument_group("to read/write files")
     group.add_argument("path", type=str, help="path to read/write")
@@ -50,13 +57,17 @@ def _remove_unwanted_params(f: _File, params: dict) -> dict:
     return new_params
 
 
-def read(f: _File, path: AnyStr | os.PathLike, **kwargs):
+def _get_data(_data: str, _format: str) -> Any:
+    return _data if _format == 'text' else ast.literal_eval(_data)
+
+
+def read(f: _File, path: AnyStr | os.PathLike, **kwargs) -> None:
     kwargs = _remove_unwanted_params(f, kwargs)
     data = f.read(path=path, **kwargs)
     print(data)
 
 
-def write(f: _File, data, path: AnyStr | os.PathLike, **kwargs):
+def write(f: _File, data, path: AnyStr | os.PathLike, **kwargs) -> None:
     kwargs = _remove_unwanted_params(f, kwargs)
     status = f.write(data=data, path=path, **kwargs)
     print(status)
@@ -69,7 +80,8 @@ def main():
     if options.read:
         read(f, options.path, mode=mode, _rfv=options.rfv)
     elif options.write:
-        write(f, options.data, options.path, mode=mode)
+        data = _get_data(options.data, options.format)
+        write(f, data, options.path, mode=mode)
 
 
 if __name__ == "__main__":

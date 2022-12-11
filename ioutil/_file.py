@@ -20,6 +20,8 @@ class IOInterface(metaclass=meta_interface):
 class _File:
     @staticmethod
     def _get_stream(file: AnyStr | os.PathLike[AnyStr], mode: str):
+        if not mode:
+            mode = {'read': 'r', 'write': 'w'}.get(util.whocalledme())
         return open(file, mode)
 
     @abc.abstractmethod
