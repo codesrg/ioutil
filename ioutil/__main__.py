@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import os
+import ast
 import sys
 import argparse
 from srutil import util
-from typing import AnyStr
+from typing import AnyStr, Any
 
 from . import File, __version__, __package__, __all__
 from ._file import _File
@@ -56,6 +57,10 @@ def _remove_unwanted_params(f: _File, params: dict) -> dict:
     return new_params
 
 
+def _get_data(_data: str, _format: str) -> Any:
+    return _data if _format == 'text' else ast.literal_eval(_data)
+
+
 def read(f: _File, path: AnyStr | os.PathLike, **kwargs) -> None:
     kwargs = _remove_unwanted_params(f, kwargs)
     data = f.read(path=path, **kwargs)
@@ -75,7 +80,8 @@ def main():
     if options.read:
         read(f, options.path, mode=mode, _rfv=options.rfv)
     elif options.write:
-        write(f, options.data, options.path, mode=mode)
+        data = _get_data(options.data, options.format)
+        write(f, data, options.path, mode=mode)
 
 
 if __name__ == "__main__":
