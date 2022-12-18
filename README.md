@@ -53,12 +53,11 @@ from ioutil import File
 data = [{'a': 1, 'b': 2}, {'a': 3, 'b': 4}]
 path = '.../file.csv'
 
-csv = File.getinstance('csv')
-csv.write(data=data, path=path)  # to write csv
-csv.read(path=path)  # to read csv
+File.write(data=data, path=path)  # to write file
+File.read(path=path)  # to read file
 ```
 
-### Command Line (not recommended) 
+### Command Line (not recommended)
 
 To write a text file.
 
