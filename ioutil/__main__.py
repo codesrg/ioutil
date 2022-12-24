@@ -5,10 +5,9 @@ import ast
 import sys
 import argparse
 from srutil import util
-from typing import AnyStr, Any
+from typing import Any
 
-from . import File, __version__, __package__, __all__
-from ._file import _File
+from . import File, __version__, __package__
 
 
 def _epilog() -> str:
@@ -33,11 +32,12 @@ def get_argument() -> argparse.Namespace:
     parser.add_argument_group(group)
     options = parser.parse_args()
     if not options.format:
-        _format = list(os.path.splitext(options.path)).pop().lstrip('.')
-        if _format != 'File' and _format not in __all__:
+        _ext = list(os.path.splitext(options.path)).pop()
+        _format = {".csv": "csv", ".json": "json", ".parquet": ".parquet", ".toml": "toml", ".txt": "text"}
+        if _ext not in _format:
             parser.error("the following arguments are required: -f/--format")
         else:
-            options.format = _format
+            options.format = _format.get(_ext)
     if not options.read and not options.write:
         parser.error("one of the following arguments are required: -r/--read or -w/--write")
     if options.read and options.write:
@@ -47,41 +47,18 @@ def get_argument() -> argparse.Namespace:
     return options
 
 
-def _remove_unwanted_params(f: _File, params: dict) -> dict:
-    method_list = {'read': f.read, 'write': f.write}
-    params_of_method = util.paramsofmethod(method_list.get(util.whocalledme())).keys()
-    new_params = dict()
-    for key, value in params.items():
-        if key in params_of_method:
-            new_params.setdefault(key, value)
-    return new_params
-
-
 def _get_data(_data: str, _format: str) -> Any:
     return _data if _format == 'text' else ast.literal_eval(_data)
 
 
-def read(f: _File, path: AnyStr | os.PathLike, **kwargs) -> None:
-    kwargs = _remove_unwanted_params(f, kwargs)
-    data = f.read(path=path, **kwargs)
-    print(data)
-
-
-def write(f: _File, data, path: AnyStr | os.PathLike, **kwargs) -> None:
-    kwargs = _remove_unwanted_params(f, kwargs)
-    status = f.write(data=data, path=path, **kwargs)
-    print(status)
-
-
 def main():
     options = get_argument()
-    f = File.getinstance(options.format)
-    mode = options.mode if options.mode else 'w' if options.write else 'r'
+    mode = options.mode if options.mode else None
     if options.read:
-        read(f, options.path, mode=mode, _rfv=options.rfv)
+        print(File.read(options.path, _format=options.format, mode=mode, _rfv=options.rfv))
     elif options.write:
         data = _get_data(options.data, options.format)
-        write(f, data, options.path, mode=mode)
+        print(File.write(data, options.path, _format=options.format, mode=mode))
 
 
 if __name__ == "__main__":
